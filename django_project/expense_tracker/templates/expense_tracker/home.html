@@ -1,7 +1,7 @@
 {% extends "expense_tracker/base.html" %}
 {% block content %}
     {% for purchase in purchases %}
-        <h1>{{ purchase.item }} {{ purchase.cost }}</h1>
-        <p>By {{ purchase.user }} on {{ purchase.date }}</p>
+        <h1>{{ purchase.name }} {{ purchase.cost }}</h1>
+        <p>By {{ purchase.user }} on {{ purchase.date|date:"F d, Y" }}</p>
     {% endfor %}
 {% endblock content %}
