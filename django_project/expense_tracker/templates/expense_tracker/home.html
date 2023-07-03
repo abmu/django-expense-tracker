@@ -1,7 +1,11 @@
 {% extends "expense_tracker/base.html" %}
 {% block content %}
-    {% for purchase in purchases %}
-        <h1>{{ purchase.name }} {{ purchase.cost }}</h1>
-        <p>By {{ purchase.user }} on {{ purchase.date|date:"F d, Y" }}</p>
+    {% for transaction in transactions %}
+        {% if transaction.user == user %}
+            <h1>{{ transaction.description }} {{ transaction.amount }}</h1>
+            <p>By {{ transaction.user }} on {{ transaction.date|date:"F d, Y" }}</p>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'transaction-update' transaction.id %}">Edit</a>
+            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'transaction-delete' transaction.id %}">Delete</a>
+        {% endif %}
     {% endfor %}
 {% endblock content %}

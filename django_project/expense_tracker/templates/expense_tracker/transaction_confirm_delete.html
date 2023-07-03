@@ -1,0 +1,16 @@
+{% extends "expense_tracker/base.html" %}
+{% block content %}
+    <div>
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Delete</legend>
+                <h2>Are you sure want to delete the transaction "{{ object.description }}"</h2>
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-danger" type="submit">Yes, delete</button>
+                <a class="btn btn-outline-secondary" href="{% url 'tracker-home' %}">Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
