@@ -1,4 +1,3 @@
-from typing import Optional
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -10,12 +9,15 @@ class TransactionListView(LoginRequiredMixin, ListView):
     model = Transaction
     template_name = 'expense_tracker/home.html'
     context_object_name = 'transactions'
-    ordering = ['-date']
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Transaction.objects.filter(user=self.request.user).order_by('-date')
 
 
 class TransactionCreateView(LoginRequiredMixin, CreateView):
     model = Transaction
-    fields = ['description','amount','transaction_type','date']
+    fields = ['description','transaction_type','amount','date']
     success_url = reverse_lazy('tracker-home')
 
     def form_valid(self, form):
@@ -25,7 +27,7 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
 
 class TransactionUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Transaction
-    fields = ['description','amount','transaction_type','date']
+    fields = ['description','transaction_type','amount','date']
     success_url = reverse_lazy('tracker-home')
 
     def form_valid(self, form):
@@ -48,6 +50,7 @@ class TransactionDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
         if self.request.user == transaction.user:
             return True
         return False
+
 
 def about(request):
     context = {
