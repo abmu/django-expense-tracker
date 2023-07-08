@@ -1,7 +1,6 @@
 {% extends "expense_tracker/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <h1>{{ user.username }}</h1>
     <div>
         <form method="POST">
             {% csrf_token %}
