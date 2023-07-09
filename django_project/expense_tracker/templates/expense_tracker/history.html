@@ -1,12 +1,30 @@
 {% extends "expense_tracker/base.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
     <h1>History</h1>
-    {% for transaction in transactions %}
-        <p>{{ transaction.transaction_type }} {{ transaction.description }} {{ transaction.amount|floatformat:2 }}</p>
-        By {{ transaction.user }} on {{ transaction.date|date:"F d, Y" }}
-        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'transaction-update' transaction.id %}">Edit</a>
-        <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'transaction-delete' transaction.id %}">Delete</a>
-    {% endfor %}
+    <div>
+        <form method="GET" action="{% url 'transaction-history' %}">
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Filter</legend>
+                {{ f_form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info mb-4" type="submit">Filter</button>
+            </div>
+        </form>
+    </div>
+    {% if transactions %}
+        {% for transaction in transactions %}
+            <p>
+                {{ transaction.transaction_type }} {{ transaction.description }} {{ transaction.amount|floatformat:2 }}
+                By {{ transaction.user }} on {{ transaction.date|date:"F d, Y" }}
+                <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'transaction-update' transaction.id %}">Edit</a>
+                <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'transaction-delete' transaction.id %}">Delete</a>
+            </p>
+        {% endfor %}
+    {% else %}
+        <p>You have no transactions</p>
+    {% endif %}
     {% if is_paginated %}
         <div>
             {% if page_obj.has_previous %}

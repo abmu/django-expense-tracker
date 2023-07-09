@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Transaction
-from .forms import TransactionForm
+from .forms import TransactionForm, TransactionFilterForm
 
 
 class TransactionListView(LoginRequiredMixin, ListView):
@@ -14,11 +14,22 @@ class TransactionListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return Transaction.objects.filter(user=self.request.user).order_by('-date')
+        # only pass values that are not None as arguments to the filter method
+        values = {
+            'description__contains': self.request.GET.get('description'),
+            'transaction_type': self.request.GET.get('transaction_type'),
+            'amount': self.request.GET.get('amount'),
+            'date__gte': self.request.GET.get('start_date'),
+            'date__lte': self.request.GET.get('end_date')
+        }
+        not_empty_values = {k:v for k, v in values.items() if v is not None and v is not ''}
+        return Transaction.objects.filter(user=self.request.user, **not_empty_values).order_by('-date', '-pk')
     
     def get_context_data(self, *args, **kwargs):
         context = super(TransactionListView, self).get_context_data(*args, **kwargs)
         context['title'] = 'History'
+        f_form = TransactionFilterForm(self.request.GET)
+        context['f_form'] = f_form
         return context
 
 
@@ -67,7 +78,7 @@ def home(request):
         'balance': transaction.get_balance(request.user),
         'income': transaction.get_income_total(request.user),
         'expense': transaction.get_expense_total(request.user),
-        'latest': Transaction.objects.filter(user=request.user).order_by('-date')[:5]
+        'transactions': Transaction.objects.filter(user=request.user).order_by('-date', '-pk')[:5]
     }
     return render(request, 'expense_tracker/home.html', context)
 
