@@ -1,0 +1,15 @@
+{% extends "expense_tracker/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div>
+        <div class="border-top pt-3">
+            <a class="btn btn-outline-info" href="{% url 'profile' %}">Edit profile</a>
+        </div>
+        <div class="border-top pt-3">
+            <a class="btn btn-outline-info" href="{% url 'password_change' %}">Change password</a>
+        </div>
+        <div class="border-top pt-3">
+            <a class="btn btn-outline-danger" href="{% url 'delete' user.username %}">Delete account</a>
+        </div>
+    </div>
+{% endblock content %}

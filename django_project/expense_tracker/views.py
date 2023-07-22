@@ -14,16 +14,16 @@ class TransactionListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        # only pass values that are not None as arguments to the filter method
-        values = {
+        # only pass values that are not None or '' as arguments to the filter method
+        filters = {
             'description__contains': self.request.GET.get('description'),
             'transaction_type': self.request.GET.get('transaction_type'),
             'amount': self.request.GET.get('amount'),
             'date__gte': self.request.GET.get('start_date'),
             'date__lte': self.request.GET.get('end_date')
         }
-        not_empty_values = {k:v for k, v in values.items() if v is not None and v is not ''}
-        return Transaction.objects.filter(user=self.request.user, **not_empty_values).order_by('-date', '-pk')
+        not_empty_filters = {k:v for k, v in filters.items() if v is not None and v is not ''}
+        return Transaction.objects.filter(user=self.request.user, **not_empty_filters).order_by('-date', '-pk')
     
     def get_context_data(self, *args, **kwargs):
         context = super(TransactionListView, self).get_context_data(*args, **kwargs)

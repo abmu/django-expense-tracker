@@ -22,7 +22,7 @@
         {% if user.is_authenticated %}
             <a href="{% url 'transaction-create' %}">New</a>
             <a href="{% url 'transaction-history' %}">History</a>
-            <a href="{% url 'profile' %}">Profile</a>
+            <a href="{% url 'settings' %}">Settings</a>
             <a href="{% url 'logout' %}">Sign out</a>
         {% else %}
             <a href="{% url 'login' %}">Log in</a>
