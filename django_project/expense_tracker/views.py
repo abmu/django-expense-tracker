@@ -22,7 +22,7 @@ class TransactionListView(LoginRequiredMixin, ListView):
             'date__gte': self.request.GET.get('start_date'),
             'date__lte': self.request.GET.get('end_date')
         }
-        not_empty_filters = {k:v for k, v in filters.items() if v is not None and v is not ''}
+        not_empty_filters = {k:v for k, v in filters.items() if v != None and v != ''}
         return Transaction.objects.filter(user=self.request.user, **not_empty_filters).order_by('-date', '-pk')
     
     def get_context_data(self, *args, **kwargs):

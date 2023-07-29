@@ -35,7 +35,7 @@ urlpatterns = [
     path('settings/profile/', users_views.profile, name='profile'),
     path('settings/password-change/', auth_views.PasswordChangeView.as_view(template_name='users/password_change.html'), name='password_change'),
     path('settings/password-change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='users/password_change_done.html'), name='password_change_done'),
-    path('settings/delete-account/<str:username>', users_views.delete, name='delete'),
+    path('settings/delete-account/<str:username>', users_views.UserDeleteView.as_view(), name='delete'),
     path('', include('expense_tracker.urls')),
 ]
 
