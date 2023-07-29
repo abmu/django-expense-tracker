@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
+from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Transaction
@@ -33,10 +34,11 @@ class TransactionListView(LoginRequiredMixin, ListView):
         return context
 
 
-class TransactionCreateView(LoginRequiredMixin, CreateView):
+class TransactionCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Transaction
     form_class = TransactionForm
     success_url = reverse_lazy('transaction-history')
+    success_message = 'New transaction successfully added!'
 
     def form_valid(self, form):
         form.instance.user = self.request.user
