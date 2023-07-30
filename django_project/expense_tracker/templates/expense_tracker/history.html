@@ -46,4 +46,29 @@
             {% endif %}
         </div>
     {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <canvas id="chart"></canvas>
+    <script>
+        let ctx = document.getElementById("chart").getContext("2d");
+
+        let chart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: ["Income", "Expense"],
+                datasets: [
+                    {
+                        backgroundColor: ["#71eb34", "#ff3333"],
+                        data: ["{{ income|floatformat:2 }}", "{{ expense|floatformat:2 }}"]
+                    }
+                ]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false,
+                    }
+                }
+            } 
+            });
+    </script>
 {% endblock content %}

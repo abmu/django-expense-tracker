@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Sum
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
@@ -31,7 +32,15 @@ class TransactionListView(LoginRequiredMixin, ListView):
         context['title'] = 'History'
         f_form = TransactionFilterForm(self.request.GET)
         context['f_form'] = f_form
+        context['income'] = self.get_income_total()
+        context['expense'] = self.get_expense_total()
         return context
+    
+    def get_income_total(self):
+        return float(self.get_queryset().filter(user=self.request.user, transaction_type='Income').aggregate(Sum('amount'))['amount__sum'] or 0)
+    
+    def get_expense_total(self):
+        return float(self.get_queryset().filter(user=self.request.user, transaction_type='Expense').aggregate(Sum('amount'))['amount__sum'] or 0)
 
 
 class TransactionCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):

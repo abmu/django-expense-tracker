@@ -21,15 +21,15 @@ class Transaction(models.Model):
 
     def __str__(self):
         return self.description
-        
-    def get_expense_total(self, request_user):
-        if request_user.is_authenticated:
-            return float(Transaction.objects.filter(user=request_user, transaction_type='Expense').aggregate(Sum('amount'))['amount__sum'] or 0)
-        return 0
     
     def get_income_total(self, request_user):
         if request_user.is_authenticated:
             return float(Transaction.objects.filter(user=request_user, transaction_type='Income').aggregate(Sum('amount'))['amount__sum'] or 0)
+        return 0
+    
+    def get_expense_total(self, request_user):
+        if request_user.is_authenticated:
+            return float(Transaction.objects.filter(user=request_user, transaction_type='Expense').aggregate(Sum('amount'))['amount__sum'] or 0)
         return 0
     
     def get_balance(self, request_user):
