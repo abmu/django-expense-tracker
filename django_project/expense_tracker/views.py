@@ -1,12 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Sum
+from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.mail import send_mail
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Transaction
-from .forms import TransactionForm, TransactionFilterForm
+from .forms import TransactionForm, TransactionFilterForm, ContactForm
 
 
 class TransactionListView(LoginRequiredMixin, ListView):
@@ -99,3 +102,22 @@ def about(request):
         'title': 'About'
     }
     return render(request, 'expense_tracker/about.html', context)
+
+
+@login_required
+def contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            send_mail(
+                form.cleaned_data.get('subject'),
+                form.cleaned_data.get('message'),
+                settings.EMAIL_HOST_USER,
+                [settings.EMAIL_HOST_USER],
+                fail_silently=False
+            )
+            messages.success(request, f'You have successfully sent an email!')
+            return redirect('tracker-contact')
+    else:
+        form = ContactForm()
+    return render(request, 'expense_tracker/contact.html', {'form': form})

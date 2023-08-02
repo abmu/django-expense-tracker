@@ -32,3 +32,11 @@ class TransactionFilterForm(ModelForm):
         # set all fields as not required
         for field in self.fields:
             self.fields[field].required = False
+
+
+class ContactForm(forms.Form):
+    subject = forms.CharField(max_length=50, 
+                              label='Subject',
+                              widget=forms.TextInput(attrs={'placeholder': 'Subject'}))
+    message = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Message'}))
+    
