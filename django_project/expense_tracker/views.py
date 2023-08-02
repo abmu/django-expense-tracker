@@ -111,7 +111,7 @@ def contact(request):
         if form.is_valid():
             send_mail(
                 form.cleaned_data.get('subject'),
-                form.cleaned_data.get('message'),
+                f'{form.cleaned_data.get("message")}\n\nUsername: {request.user.username}\nEmail: {request.user.email}',
                 settings.EMAIL_HOST_USER,
                 [settings.EMAIL_HOST_USER],
                 fail_silently=False
